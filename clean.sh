@@ -1,3 +1,5 @@
-## commands work individually but clean.sh doesn't execute well
 docker stop flask;
-docker rm $(docker ps -a -q -f status=exited)
+# docker rm $(docker ps -a -q -f status=exited) <--- don't need this line if you run container with '--rem''
+docker image rm flask:1501
+
+# docker image rm $(docker ps -a -q -f <something_based_on_name_or_tag>)

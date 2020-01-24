@@ -2,26 +2,25 @@ import os
 from flask import Flask, request, json, abort
 from flask_cors import CORS
 
-# import sentry_sdk
-# from sentry_sdk.integrations.flask import FlaskIntegration
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
-# sentry_sdk.init(
-#     dsn="https://2ba68720d38e42079b243c9c5774e05c@sentry.io/1316515",
-#     integrations=[FlaskIntegration()]
-# )
+sentry_sdk.init(
+    dsn="https://2ba68720d38e42079b243c9c5774e05c@sentry.io/1316515",
+    integrations=[FlaskIntegration()]
+)
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
 
 @app.route('/handled', methods=['GET'])
 def handled_exception():
-    print('printing...')
-    # try:
-    #     '2' + 2
-    # except Exception as err:
-    #     sentry_sdk.capture_exception(err)
-    #     abort(500)
-    return 'Success'
+    print('printing...again')
+    try:
+        '2' + 2
+    except Exception as err:
+        sentry_sdk.capture_exception(err)
+    return 'Success, error captured. Go to sentry.io'
 
 @app.route('/unhandled', methods=['GET'])
 def unhandled_exception():
@@ -52,7 +51,6 @@ def sentry_event_context():
         order = json.loads(request.data)
         with sentry_sdk.configure_scope() as scope:
                 scope.user = { "email" : order["email"] }
-        
     transactionId = request.headers.get('X-Transaction-ID')
     sessionId = request.headers.get('X-Session-ID')
     global Inventory
